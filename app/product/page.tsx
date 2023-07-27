@@ -4,6 +4,8 @@ import { Product } from './product'
 
 export const Page = () => {
   return (
-    <div><Product/></div>
+    <div>
+      <Product/>
+    </div>
   )
 }
