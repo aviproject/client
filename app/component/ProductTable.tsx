@@ -1,8 +1,10 @@
-import { Input, Space, Table, Tag } from 'antd';
+import { Input, InputNumber, Space, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React from 'react'
 
-
+interface ProductTableProps{
+  tableData?:[]
+}
 interface DataType {
     key: string;
     name: string;
@@ -11,7 +13,7 @@ interface DataType {
     total: number;
   }
 
-export const ProductTable = () =>  {
+export const ProductTable: React.FC<ProductTableProps>= ({tableData}) =>  {
 
 
   // const onTextKeyPress = (event:any) => {
@@ -19,15 +21,15 @@ export const ProductTable = () =>  {
   //     event.preventDefault();
   //   }
   // }
-
+  console.log(tableData,"in Table")
   const handleMfrPriceChange = (value:number) => {
     console.log(value)
   }
     const columns: ColumnsType<DataType> = [
         {
           title: 'Product Name',
-          dataIndex: 'name',
-          key: 'name',
+          dataIndex: 'item_name',
+          key: 'item_name',
           render: (text) => <a>{text}</a>,
         },
         {
@@ -41,9 +43,10 @@ export const ProductTable = () =>  {
           key: 'quantity',
           render: (_, { quantity }) => (
             <>
-              <Input
+              <InputNumber
                 // value={contact.manufacturer_price}
-                style={{ border: 'none', borderBottom: '1px solid' }}
+                min={0}
+                style={{ width:100 }}
                 onChange={(c) => { handleMfrPriceChange(quantity) }} />
             </>
           ),
@@ -57,7 +60,7 @@ export const ProductTable = () =>  {
       ];
 
   return (
-    <div><Table columns={columns}/></div>
+    <div><Table pagination={false} columns={columns} dataSource={tableData}/></div>
   )
 }
 

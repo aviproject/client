@@ -1,9 +1,9 @@
 "use client"; // this is a client component
 
-import { Button, Col, DatePicker, Divider, Form, Input, Row } from "antd";
+import { Button, Col, DatePicker, Divider, Form, Input, InputNumber, Row } from "antd";
 import Axios from 'axios'
 import Head from "next/head";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ProductSearch } from "../component/ProductSearch";
 import ProductTable from "../component/ProductTable";
 
@@ -11,7 +11,15 @@ export const Product = () => {
 
   const [productForm] = Form.useForm();
   const [customerForm] = Form.useForm();
+  const [tableData,setData] = useState<[]>([]);
   
+  const getTableData =(tableData:any) => {
+    console.log(tableData,"in product")
+  }
+  useEffect(()=> {
+    getTableData
+  },[getTableData(tableData)])
+
   const onFinish = (value: string) => {
       console.log(value)
   };
@@ -22,11 +30,11 @@ export const Product = () => {
 
   return (
     <React.Fragment>
-      <ProductSearch form={productForm} />
-      <div style={{marginLeft : 230, marginTop:60}}>
+      <ProductSearch form={productForm} tableData={tableData} setData={setData} getTableData={getTableData} />
+      <div style={{marginLeft : 230, marginTop:50}}>
         <span>Customer Details</span>
       </div>
-      <div style={{marginTop : 50, marginLeft:150}}>
+      <div style={{marginTop : 30, marginLeft:150}}>
         <Form
           // {...formItemLayout}
           form={customerForm}
@@ -37,55 +45,58 @@ export const Product = () => {
         >
           <Row>
             <Col xs={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 8 }} xxl={{ span: 7 }}>
-            <Form.Item
-              label="Customer Name: "
-              name="customer"
-              style={{ width: 400}}
-              rules={[{ required: true, message: 'Please input your name!' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="date"
-              label="Purchase Date"
-              style={{ width: 900}}>
-              <DatePicker onChange={onDateChange} />
-            </Form.Item>
+              <Form.Item
+                label="Customer Name:"
+                name="customer"
+                style={{ width: 270}}
+                // rules={[{ required: true, message: 'Please input your name!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="date"
+                label="Purchase Date"
+                style={{ width: 280}}>
+                <DatePicker onChange={onDateChange} />
+              </Form.Item>
             
             </Col>
+            <Col>
+              <Divider style={{ height: "450px", borderLeft: ".1rem solid gray" }} type='vertical' />
+            </Col>
             <Col xs={{ span: 24 }} md={{ span: 24 }} lg={{ span: 24 }} xl={{ span: 15 }} xxl={{ span: 16 }}>
-              <ProductTable/>
+              <ProductTable tableData={tableData}/>
 
-              <Row style={{marginTop:15,marginLeft:850}}>
+              <Row style={{marginTop:15,marginLeft:950}}>
                 <Col span={24}>
                   <Form.Item
                     name="subtotal"
                     label="Subtotal:"
                     // style={{width:200}}
                   >
-                    <Input/>
+                    <InputNumber min={0}/>
                   </Form.Item>
                 </Col>
               </Row>
-              <Row style={{marginTop:10,marginLeft:850}}>
-                <Col span={24} style={{textAlign: 'end' }}>
+              <Row style={{marginTop:10,marginLeft:950}}>
+                <Col span={24}>
                   <Form.Item
                     name="discount"
                     label="Discount"
                     // style={{width:200}}
                   >
-                    <Input />
+                    <InputNumber min={0}/>
                   </Form.Item>
                 </Col>
               </Row>
-              <Row style={{marginTop:10,marginLeft:850}}>
-                <Col span={24} style={{textAlign: 'end' }}>
+              <Row style={{marginTop:10,marginLeft:950}}>
+                <Col span={24}>
                   <Form.Item
                     name="final_total"
                     label="Final Price"
                     // style={{width:250}}
                   >
-                    <Input />
+                    <InputNumber min={0} />
                   </Form.Item>
                 </Col>
               </Row>
