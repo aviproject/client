@@ -1,6 +1,6 @@
 "use client"; // this is a client component
 
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import {
   AutoComplete,
   Button,
@@ -9,78 +9,72 @@ import {
   Form,
   FormInstance,
   Row,
+  notification,
 } from "antd";
 import Axios from "axios";
 
 interface ProductSearchProps {
   form: FormInstance;
-  tableData?:[];
-  setData?:any;
-  getTableData:Function;
+  tableData?: [];
+  setData?: any;
+  getTableData: Function;
 }
 
 const API_URL = process.env.API_URL;
-const { Option } = AutoComplete;
 
-export const ProductSearch: React.FC<ProductSearchProps> = ({ form,tableData,setData,getTableData}) => {
-  const [value, setValue] = useState("");
-  const [options, setOptions] = useState([]);
-  const [anotherOptions, setAnotherOptions] = useState<{ value: string }[]>([]);
+export const ProductSearch: React.FC<ProductSearchProps> = ({
+  form,
+  tableData,
+  setData,
+  getTableData,
+}) => {
+  const [selectedvalue, setSelectedValue] = useState("");
+  const [options, setOptions] = useState<[]>([]);
   const [barcode, setBarcode] = useState<string>("");
   const [item, setItem] = useState<string>("");
-  const [products, setProducts] = useState<[]>([]);
-  
-
-  useEffect(() => {
-    let options: any = [];
-    console.log(barcode, item, "Both in useEffect");
-    const searchby =
-      barcode && item
-        ? `product?barcode=${barcode}&item=${item}`
-        : barcode
-        ? `product?barcode=${barcode}`
-        : item
-        ? `product?item=${item}`
-        : null;
-    if (searchby) {
-      const URL = `${API_URL}/${searchby}`;
-
-      const response = Axios.get(URL).then((response) => {
-        if (response.status == 200) {
-          console.log(response?.data?.data, "response");
-          setData(response?.data?.data)
-          response?.data?.data?.forEach((p: any) => {
-            options.push(
-              <Option key={p?.product_id} value={p?.item_name}>
-                {p?.item_name}
-              </Option>
-            );
-          });
-          setProducts(options);
-        }
-      });
-    }
-  }, [barcode, item]);
 
   const onSelect = (data: string) => {
     console.log("onSelect", data);
+    setSelectedValue(data);
   };
 
-  const onChange = (data: string) => {
-    setValue(data);
-  };
-  const onFinish = (value: string) => {
-    console.log(value);
-    // console.log(tableData,"tableData")
-    getTableData(tableData)
+  const onFinish = async (value: { barcode: string; item: string }) => {
+    const searchby =
+      value?.barcode && value?.item
+        ? `product?barcode=${value?.barcode}&item=${value?.item}`
+        : value?.barcode
+        ? `product?barcode=${value?.barcode}`
+        : value?.item
+        ? `product?item=${value?.item}`
+        : "product";
+
+    const URL = `${API_URL}/${searchby}`;
+
+    let data: any = [];
+    try {
+      const response = await Axios.get(URL).then((response) => {
+        if (response.status == 200 && response?.data?.data?.length) {
+          data.push(...options, ...response?.data?.data);
+          setOptions(data);
+          setData(data);
+          getTableData(data);
+          notification.success({ message: response?.data?.message });
+        } else {
+          setOptions(response?.data?.data);
+          setData(response?.data?.data);
+          getTableData(response?.data?.data);
+          notification.error({ message: response?.data?.message });
+        }
+      });
+    } catch (error) {
+      notification.error({ message: "please try again!" });
+    }
   };
   const onSearchbarcode = (value: string) => {
-    console.log(value, "text");
     setBarcode(value);
   };
 
   const onSearchByItem = (value: string) => {
-    console.log(value, "vaa");
     setItem(value);
   };
   return (
@@ -101,29 +95,23 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({ form,tableData,set
             >
               <Form.Item name="barcode" label="Barcode:">
                 <AutoComplete
-                  value={value}
+                  // value={value}
                   // options={products}
                   style={{ width: 250 }}
                   onSelect={onSelect}
                   onSearch={(text) => onSearchbarcode(text)}
-                  onChange={onChange}
                   placeholder="Barcode Search"
-                >
-                  {products}
-                </AutoComplete>
+                ></AutoComplete>
               </Form.Item>
               <Form.Item name="item" label="Product">
                 <AutoComplete
-                  value={value}
+                  // value={value}
                   // options={products}
                   style={{ width: 256, paddingLeft: 2 }}
                   onSelect={onSelect}
                   onSearch={(text) => onSearchByItem(text)}
-                  onChange={onChange}
                   placeholder="Product Search"
-                >
-                  {products}
-                </AutoComplete>
+                ></AutoComplete>
               </Form.Item>
               <Form.Item>
                 <Button

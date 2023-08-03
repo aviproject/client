@@ -1,29 +1,31 @@
 import { Input, InputNumber, Space, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import React from 'react'
+import React, { useState } from 'react'
 
 interface ProductTableProps{
   tableData?:[]
+  setData:Function;
+  getTableData:Function;
 }
 interface DataType {
     key: string;
     name: string;
-    Price: number;
+    price: number;
     quantity: number;
     total: number;
   }
 
-export const ProductTable: React.FC<ProductTableProps>= ({tableData}) =>  {
+export const ProductTable: React.FC<ProductTableProps>= ({tableData,setData,getTableData}) =>  {
 
+  const [total, setTotal] = useState(0);
 
-  // const onTextKeyPress = (event:any) => {
-  //   if (!/[0-9.]/.test(event.key)) {
-  //     event.preventDefault();
-  //   }
-  // }
-  console.log(tableData,"in Table")
-  const handleMfrPriceChange = (value:number) => {
-    console.log(value)
+  const handleQuantity = (quantity:any,row:any,i:any,tableData:any) => {
+ 
+    tableData[i]["quantity"] = quantity
+    tableData[i]["total"] = row.price * quantity
+    setTotal(tableData[i].total)
+    setData(tableData)
+    getTableData(tableData)
   }
     const columns: ColumnsType<DataType> = [
         {
@@ -33,7 +35,7 @@ export const ProductTable: React.FC<ProductTableProps>= ({tableData}) =>  {
           render: (text) => <a>{text}</a>,
         },
         {
-          title: 'Price',
+          title: 'Price($)',
           dataIndex: 'price',
           key: 'price',
         },
@@ -41,27 +43,41 @@ export const ProductTable: React.FC<ProductTableProps>= ({tableData}) =>  {
           title: 'Quantity',
           dataIndex: 'quantity',
           key: 'quantity',
-          render: (_, { quantity }) => (
+          render: (text,record,i) => (
             <>
               <InputNumber
-                // value={contact.manufacturer_price}
-                min={0}
+                defaultValue={1}
+                min={1}
                 style={{ width:100 }}
-                onChange={(c) => { handleMfrPriceChange(quantity) }} />
+                onChange={(e) => handleQuantity(e,record,i,tableData)} />
             </>
           ),
         },
         {
-          title: 'Total',
+          title: 'Total Price($)',
           key: 'total',
           dataIndex: 'total',
+          render: (text,record,i) => (
+            <>
+              <InputNumber
+                value={record?.quantity ?  record?.total : record?.price}
+                min={0}
+                style={{ width:100 }}
+                disabled
+                 />
+            </>
+          ),
         },
         
       ];
 
   return (
-    <div><Table pagination={false} columns={columns} dataSource={tableData}/></div>
+    <div>
+      <Table 
+        pagination={false} 
+        columns={columns} 
+        dataSource={tableData}
+        />
+    </div>
   )
 }
-
-export default ProductTable
