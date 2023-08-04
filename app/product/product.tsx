@@ -25,15 +25,11 @@ export const Product = () => {
   const [discountValue, setDiscount] = useState(0)
 
   const getTableData = (tableData: any) => {
-    console.log(tableData, "in product");
     const sum = tableData?.reduce(
       (a: number, v: any) => a + Number(v?.total ? v?.total : v?.price),
       0
     );
     customerForm.setFieldValue("subtotal", sum);
-    console.log(customerForm.getFieldValue("subtotal"),"subtotal")
-    console.log(discountValue,"discount")
-    // debugger;
     customerForm.setFieldValue("final_price",customerForm.getFieldValue("subtotal") - discountValue);
   };
   useEffect(() => {
@@ -56,7 +52,6 @@ export const Product = () => {
             items: tableData,
           },
         }).then((response) => {
-          console.log(response,"data")
            if (response?.data?.statusCode == 200) notification.success({message : response?.data?.message})
         });
       } else {
@@ -81,7 +76,6 @@ export const Product = () => {
   };
 
   const onCancel = () => {
-    console.log("in cancel")
     setData([])
     setDiscount(0)
     productForm.resetFields();

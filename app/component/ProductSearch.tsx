@@ -34,7 +34,6 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({
   const [item, setItem] = useState<string>("");
 
   const onSelect = (data: string) => {
-    console.log("onSelect", data);
     setSelectedValue(data);
   };
 
