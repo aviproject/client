@@ -1,4 +1,4 @@
-import { Input, InputNumber, Space, Table, Tag } from 'antd';
+import { InputNumber, Space, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useState } from 'react'
 
@@ -19,7 +19,7 @@ export const ProductTable: React.FC<ProductTableProps>= ({tableData,setData,getT
 
   const [total, setTotal] = useState(0);
 
-  const handleQuantity = (quantity:any,row:any,i:any,tableData:any) => {
+  const handleQuantity = (quantity:any,row:any,i:number,tableData:any) => {
  
     tableData[i]["quantity"] = quantity
     tableData[i]["total"] = row.price * quantity

@@ -20,7 +20,6 @@ interface ProductSearchProps {
   getTableData: Function;
 }
 
-const API_URL = process.env.API_URL;
 
 export const ProductSearch: React.FC<ProductSearchProps> = ({
   form,
@@ -28,6 +27,7 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({
   setData,
   getTableData,
 }) => {
+  const API_URL = process.env.API_URL;
   const [selectedvalue, setSelectedValue] = useState("");
   const [options, setOptions] = useState<[]>([]);
   const [barcode, setBarcode] = useState<string>("");
@@ -85,7 +85,6 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({
             style={{ marginTop: 30, display: "flex", justifyContent: "center" }}
           >
             <Form
-              // {...formItemLayout}
               form={form}
               name="class"
               onFinish={onFinish}
@@ -94,8 +93,6 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({
             >
               <Form.Item name="barcode" label="Barcode:">
                 <AutoComplete
-                  // value={value}
-                  // options={products}
                   style={{ width: 250 }}
                   onSelect={onSelect}
                   onSearch={(text) => onSearchbarcode(text)}
@@ -104,8 +101,6 @@ export const ProductSearch: React.FC<ProductSearchProps> = ({
               </Form.Item>
               <Form.Item name="item" label="Product">
                 <AutoComplete
-                  // value={value}
-                  // options={products}
                   style={{ width: 256, paddingLeft: 2 }}
                   onSelect={onSelect}
                   onSearch={(text) => onSearchByItem(text)}

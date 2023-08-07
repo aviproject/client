@@ -95,7 +95,6 @@ export const Product = () => {
       </div>
       <div style={{ marginTop: 30, marginLeft: 150 }}>
         <Form
-          // {...formItemLayout}
           form={customerForm}
           name="class"
           onFinish={onFinish}
@@ -151,7 +150,6 @@ export const Product = () => {
                   <Form.Item
                     name="subtotal"
                     label="Subtotal($):"
-                    // style={{width:200}}
                   >
                     <InputNumber min={0} disabled />
                   </Form.Item>
@@ -162,7 +160,6 @@ export const Product = () => {
                   <Form.Item
                     name="discount"
                     label="Discount($):"
-                    // style={{width:200}}
                   >
                     <InputNumber
                       min={0}
@@ -177,7 +174,6 @@ export const Product = () => {
                   <Form.Item
                     name="final_price"
                     label="Final Price($):"
-                    // style={{width:250}}
                   >
                     <InputNumber min={0} disabled />
                   </Form.Item>
